@@ -33,7 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not ping database:", err)
 	}
-	fmt.Println("Conectado ao Postgres com sucesso!")
+	fmt.Println("Connected to database!")
 
 	// 2. Router Setup (Chi)
 	r := chi.NewRouter()
@@ -47,14 +47,14 @@ func main() {
 
 	// 3. Rotas
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Sistema Operacional. Banco Conectado."))
+		w.Write([]byte("System is running. Database is connected."))
 	})
 
-	// Vamos adicionar a rota de criar tarefas no próximo passo
-	r.Post("/tasks", createTaskHandler)	
+	r.Post("/tasks", createTaskHandler)
+	r.Get("/tasks", listTasksHandler)
 
 	// 4. Start Server
 	port := "8080"
-	fmt.Printf("Servidor rodando na porta %s\n", port)
+	fmt.Printf("Server is running at %s\n", port)
 	http.ListenAndServe(":"+port, r)
 }
