@@ -1,0 +1,63 @@
+
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"time"
+)
+
+// createTaskHandler lida com requisições POST /tasks
+func createTaskHandler(w http.ResponseWriter, r *http.Request) {
+	var req CreateTaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if req.Title == "" {
+		http.Error(w, "Title is required", http.StatusBadRequest)
+		return
+	}
+	if req.Effort < 1 || req.Effort > 5 {
+		http.Error(w, "Effort must be between 1 and 5", http.StatusBadRequest)
+		return
+	}
+
+	sql := `
+		INSERT INTO tasks (title, description, due_date, effort, difficulty, requirements, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
+	`
+
+	var newID int
+	err := db.QueryRow(context.Background(), sql,
+		req.Title,
+		req.Description,
+		req.DueDate,
+		req.Effort,
+		req.Difficulty,
+		req.Requirements,
+		time.Now(),
+	).Scan(&newID)
+
+	if err != nil {
+		http.Error(w, "Database error: "+err.E
+
+// --- AQUI ESTÁ A PARTE QUE FALTOU ---
+
+// listTasksHandler retorna todas as tarefas
+func listTasksHandler(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.Query(context.Background(), "SELECT id, title, description, due_date, effort, difficulty, requirements, created_at FROM tasks")
+	if err != nil {
+		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)	}
+	defer rows.Close()
+
+	tasks := []Task{}
+	for rows.Next() {
+		var t Task
+		if err := rows.Scan(&t.ID, &t.Title, &t.Description, &t.DueDate, &t.Effort, &t.Difficulty, &t.Requirements, &t.CreatedAt); err != nil {
+			http.Error(w, "Er	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tasks)
+

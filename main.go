@@ -52,6 +52,8 @@ func main() {
 
 	r.Post("/tasks", createTaskHandler)
 	r.Get("/tasks", listTasksHandler)
+	r.Put("/tasks/{id}", updateTaskHandler)
+	r.Delete("/tasks/{id}", deleteTaskHandler)
 
 	// 4. Start Server
 	port := "8080"
